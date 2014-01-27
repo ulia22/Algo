@@ -134,20 +134,23 @@ void SegmentsAuHasard(int n,point segments[]){
   segments[0].abscisse = 20;
   segments[0].ordonnee = randBetween(700, 100);
   segments[1].abscisse = randBetween(segments[0].abscisse + 100, segments[0].abscisse + 1);
-  segments[1].ordonnee = randBetween(getmin(700,segments[0].ordonnee + 50), getmax(100,segments[0].ordonnee - 50));
+  segments[1].ordonnee = randBetween(segments[0].ordonnee + 50, segments[0].ordonnee - 50);
   
   
-  for(i = 1; i < n i++){
+  for(i = 1; i < n; i++){
   	segments[2*i].abscisse = randBetween(400, 20);
   	segments[2*i].ordonnee = randBetween(700, 100);
   	
   	segments[2*i + 1].abscisse = randBetween(segments[2*i].abscisse + 100, segments[2*i].abscisse + 1);
-  	segments[2*i + 1].ordonnee = randBetween(getmin(700,segments[2*i].ordonnee + 50), getmax(100,segments[2*i].ordonnee - 50));
+  	segments[2*i + 1].ordonnee = randBetween(segments[2*i].ordonnee + 50, segments[2*i].ordonnee - 50);
   }
-  //
-  // A COMPLETER
-  //
+}
 
+//********************************************//
+//Cette fonction renvoie vrai si les 2 points p3 p4 sont du meme coté qu'un segment defini par 2 points p1 p2
+//
+bool sameSide(point* p1, point* p2, point* p3, point* p4){
+	return (det(p1, p2, p1, p3) * det(p1, p2, p1, p4) > 0);
 }
 
 
@@ -176,8 +179,7 @@ bool Intersectent(point p1, point p2, point p3, point p4){
   //
   //A COMPLETER
   //
-
-
+	return (!sameSide(&p1, &p2, &p3, &p4) && !sameSide(&p3, &p4, &p1, &p2));
 }
 
 //********************************************//

@@ -134,7 +134,7 @@ void SegmentsAuHasard(int n,point segments[]){
   segments[0].abscisse = 20;
   segments[0].ordonnee = randBetween(700, 100);
   segments[1].abscisse = randBetween(segments[0].abscisse + 100, segments[0].abscisse + 1);
-  segments[1].ordonnee = randBetween(getmin(700,segments[0].ordonnee + 50), getmax(100,segments[0].ordonnee - 50));
+  segments[1].ordonnee = randBetween(segments[0].ordonnee + 50, segments[0].ordonnee - 50);
   
   
   for(i = 1; i < n; i++){
@@ -142,12 +142,15 @@ void SegmentsAuHasard(int n,point segments[]){
   	segments[2*i].ordonnee = randBetween(700, 100);
   	
   	segments[2*i + 1].abscisse = randBetween(segments[2*i].abscisse + 100, segments[2*i].abscisse + 1);
-  	segments[2*i + 1].ordonnee = randBetween(getmin(700,segments[2*i].ordonnee + 50), getmax(100,segments[2*i].ordonnee - 50));
+  	segments[2*i + 1].ordonnee = randBetween(segments[2*i].ordonnee + 50, segments[2*i].ordonnee - 50);
   }
-  //
-  // A COMPLETER
-  //
+}
 
+//********************************************//
+//Cette fonction renvoie vrai si les 2 points p3 p4 sont du meme coté qu'un segment defini par 2 points p1 p2
+//
+bool sameSide(point* p1, point* p2, point* p3, point* p4){
+	return (det(p1, p2, p1, p3) * det(p1, p2, p1, p4) > 0);
 }
 
 
@@ -162,7 +165,7 @@ bool Intersectent(point p1, point p2, point p3, point p4){
 
   //conversion en long long pour eviter un depacement d'int.
 
-  long long x1= (long long) p1.abscisse;
+  /*long long x1= (long long) p1.abscisse;
   long long x2= (long long) p2.abscisse;
   long long x3= (long long) p3.abscisse;
   long long x4= (long long) p4.abscisse;
@@ -170,14 +173,13 @@ bool Intersectent(point p1, point p2, point p3, point p4){
   long long y1= (long long) p1.ordonnee;
   long long y2= (long long) p2.ordonnee;
   long long y3= (long long) p3.ordonnee;
-  long long y4= (long long) p4.ordonnee;
+  long long y4= (long long) p4.ordonnee;*/
 
 
   //
   //A COMPLETER
   //
-
-
+	return (!sameSide(&p1, &p2, &p3, &p4) && !sameSide(&p3, &p4, &p1, &p2));
 }
 
 //********************************************//
