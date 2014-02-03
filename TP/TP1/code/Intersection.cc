@@ -242,28 +242,70 @@ bool Intersection(int n, point segments[]){
   ARN ordre(&ClesEgales,&CleInferieure);
 
     for(int i=0; i<2*n; i++){
+      //Si p est l'extrémitée gauche d'un segment
+      if(Tri[i]%2 == 0){
+        ordre.Insere(Tri[i]/2);
+        if(ordre.Successeur(Tri[i]/2) != -1){
+          if(Intersectent(segments[2 * ordre.Successeur(Tri[i])], segments[2 * ordre.Successeur(Tri[i]/2) + 1],segments[Tri[i]], segments[Tri[i]+1])){
+          //cout << "Values Tri[i] = "<< Tri[i] << " ordre.successeur = "<< ordre.Successeur(Tri[i]) << endl;
+          //cout << "Premier if "<<endl;
+          return true;
+          }
+        }
+        if(ordre.Predecesseur(Tri[i/2]) != -1){
+          if(Intersectent(segments[2 * ordre.Predecesseur(Tri[i/2])], segments[2 * ordre.Predecesseur(Tri[i]/2) + 1],segments[Tri[i]], segments[Tri[i]+1])){
+            //cout << "Deuxieme if "<<endl;
+            return true;
+          }
+        }
+      }
 
-      //
-      //A COMPLETER
-      //
-
-
+      //Si p extrémité droite.
+      if(Tri[i]%2 == 1){
+        if(!(ordre.Successeur(Tri[i]) == -1 || ordre.Predecesseur(Tri[i]) == -1)){
+          if(Intersectent(segments[2*ordre.Successeur(Tri[i]/2)], segments[2*ordre.Successeur(Tri[i]/2) + 1],segments[2*ordre.Predecesseur(Tri[i]/2)], segments[2*ordre.Predecesseur(Tri[i]/2) + 1])){
+            return true;
+            //cout << "Troisième if "<<endl;
+          }
+        }
+        ordre.Supprime(Tri[i]);
+      }
     }
+    return false;
 }
 
 //********************************************//
+bool algoNaif(int n, point segments[]){
+  for(int i = 0; i < n; i++){
+    for(int j = i+1; j < n; j++){
+      if(Intersectent(segments[2*i], segments[2*i+1], segments[2*j], segments[2*j+1])){
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 int main(){
 
 
-  SegmentsAuHasard(n,segments);
-  AffichageSegments(n,segments);
 
-  if(Intersection(n,segments)){
+  for(int i = 0; i < 10000; i++){
+    SegmentsAuHasard(n,segments);
+    AffichageSegments(n,segments);
+    if(algoNaif(n, segments) != Intersection(n,segments)){
+      cout << "Fail !"<< endl;
+      exit(EXIT_SUCCESS);
+    }
+  }
+  cout << "Ok !" << endl;
+  exit(EXIT_SUCCESS);
+
+  /*if(Intersection(n,segments)){
     cout << "Il y a une intersection." << endl;
   }else{
     cout <<"Il n'y a pas d'intersection." << endl;
-  }
+  }*/
 }
 
 
