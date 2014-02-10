@@ -162,24 +162,21 @@ bool sameSide(point* p1, point* p2, point* p3, point* p4){
 
 
 bool Intersectent(point p1, point p2, point p3, point p4){
-
-  //conversion en long long pour eviter un depacement d'int.
-
-  /*long long x1= (long long) p1.abscisse;
-  long long x2= (long long) p2.abscisse;
-  long long x3= (long long) p3.abscisse;
-  long long x4= (long long) p4.abscisse;
-
-  long long y1= (long long) p1.ordonnee;
-  long long y2= (long long) p2.ordonnee;
-  long long y3= (long long) p3.ordonnee;
-  long long y4= (long long) p4.ordonnee;*/
-
-
-  //
-  //A COMPLETER
-  //
 	return (!sameSide(&p1, &p2, &p3, &p4) && !sameSide(&p3, &p4, &p1, &p2));
+}
+
+bool IntersectentLarge (point p1, point p2, point p3, point p4){
+  if(!Intersectent(p1, p2, p3, p4)){
+      return false;
+  }else{
+    if(p2.abscisse == p3.abscisse && p2.ordonnee == p3.ordonnee){
+      return true;
+    }
+    if(){
+
+    }
+  }
+  return false;
 }
 
 //********************************************//
@@ -237,42 +234,87 @@ bool Intersection(int n, point segments[]){
   }
 
   TriLexicographique(segments,2*n,Tri);
-
+  int nseg = 0;
 
   ARN ordre(&ClesEgales,&CleInferieure);
 
-    for(int i=0; i<2*n; i++){
-      //Si p est l'extrémitée gauche d'un segment
-      if(Tri[i]%2 == 0){
-        ordre.Insere(Tri[i]/2);
-        if(ordre.Successeur(Tri[i]/2) != -1){
-          if(Intersectent(segments[2 * ordre.Successeur(Tri[i])], segments[2 * ordre.Successeur(Tri[i]/2) + 1],segments[Tri[i]], segments[Tri[i]+1])){
-          //cout << "Values Tri[i] = "<< Tri[i] << " ordre.successeur = "<< ordre.Successeur(Tri[i]) << endl;
-          //cout << "Premier if "<<endl;
+  for(int i=0; i<2*n-1; i++){
+
+    //Si p est l'extrémitée gauche d'un segment
+    if(Tri[i]%2 == 0){
+      nseg = Tri[i]/2;
+      ordre.Insere(nseg);
+      if(ordre.Predecesseur(nseg) != -1){
+        if(Intersectent(segments[2 * ordre.Predecesseur(nseg)], segments[(2 * ordre.Predecesseur(nseg) + 1)], segments[Tri[i]], segments[Tri[i]+1])){
           return true;
-          }
-        }
-        if(ordre.Predecesseur(Tri[i/2]) != -1){
-          if(Intersectent(segments[2 * ordre.Predecesseur(Tri[i/2])], segments[2 * ordre.Predecesseur(Tri[i]/2) + 1],segments[Tri[i]], segments[Tri[i]+1])){
-            //cout << "Deuxieme if "<<endl;
-            return true;
-          }
         }
       }
-
-      //Si p extrémité droite.
-      if(Tri[i]%2 == 1){
-        if(!(ordre.Successeur(Tri[i]) == -1 || ordre.Predecesseur(Tri[i]) == -1)){
-          if(Intersectent(segments[2*ordre.Successeur(Tri[i]/2)], segments[2*ordre.Successeur(Tri[i]/2) + 1],segments[2*ordre.Predecesseur(Tri[i]/2)], segments[2*ordre.Predecesseur(Tri[i]/2) + 1])){
-            return true;
-            //cout << "Troisième if "<<endl;
-          }
+      if(ordre.Successeur(nseg) != -1){
+        if(Intersectent(segments[2 * ordre.Successeur(nseg)], segments[2 * ordre.Successeur(nseg) + 1], segments[Tri[i]], segments[Tri[i]+1])){
+          return true;
         }
-        ordre.Supprime(Tri[i]);
       }
     }
+
+    //Si p extrémité droite.
+    if(Tri[i]%2 == 1){
+      nseg = Tri[i]/2;
+      if(!(ordre.Successeur(Tri[i]) == -1 || ordre.Predecesseur(Tri[i]) == -1)){
+        if(Intersectent(segments[2*ordre.Predecesseur(nseg)], segments[2*ordre.Predecesseur(nseg) + 1], segments[2*ordre.Successeur(nseg)], segments[2*ordre.Successeur(nseg) + 1])){
+          return true;
+        }
+      }
+      ordre.Supprime(nseg);
+    }
+  }
     return false;
 }
+
+bool IntersectionLarge(int n, point segments[]){
+
+  //Tri contient les abscisses des extremites des segments, c'est l'echeancier
+  int Tri[2*n];
+  for(int i=0;i<2*n;i++){
+    Tri[i]=i;
+  }
+
+  TriLexicographique(segments,2*n,Tri);
+  int nseg = 0;
+
+  ARN ordre(&ClesEgales,&CleInferieure);
+
+  for(int i=0; i<2*n-1; i++){
+
+    //Si p est l'extrémitée gauche d'un segment
+    if(Tri[i]%2 == 0){
+      nseg = Tri[i]/2;
+      ordre.Insere(nseg);
+      if(ordre.Predecesseur(nseg) != -1){
+        if(Intersectent(segments[2 * ordre.Predecesseur(nseg)], segments[(2 * ordre.Predecesseur(nseg) + 1)], segments[Tri[i]], segments[Tri[i]+1])){
+          return true;
+        }
+      }
+      if(ordre.Successeur(nseg) != -1){
+        if(Intersectent(segments[2 * ordre.Successeur(nseg)], segments[2 * ordre.Successeur(nseg) + 1], segments[Tri[i]], segments[Tri[i]+1])){
+          return true;
+        }
+      }
+    }
+
+    //Si p extrémité droite.
+    if(Tri[i]%2 == 1){
+      nseg = Tri[i]/2;
+      if(!(ordre.Successeur(Tri[i]) == -1 || ordre.Predecesseur(Tri[i]) == -1)){
+        if(Intersectent(segments[2*ordre.Predecesseur(nseg)], segments[2*ordre.Predecesseur(nseg) + 1], segments[2*ordre.Successeur(nseg)], segments[2*ordre.Successeur(nseg) + 1])){
+          return true;
+        }
+      }
+      ordre.Supprime(nseg);
+    }
+  }
+    return false;
+}
+
 
 //********************************************//
 bool algoNaif(int n, point segments[]){
@@ -286,13 +328,17 @@ bool algoNaif(int n, point segments[]){
   return false;
 }
 
+bool simplePoly(int n, Points segs[]){
+
+}
+
+
+
 int main(){
 
-
-
-  for(int i = 0; i < 10000; i++){
+  for(int i = 0; i < 1000000; i++){
     SegmentsAuHasard(n,segments);
-    AffichageSegments(n,segments);
+    //AffichageSegments(n,segments);
     if(algoNaif(n, segments) != Intersection(n,segments)){
       cout << "Fail !"<< endl;
       exit(EXIT_SUCCESS);
@@ -307,6 +353,3 @@ int main(){
     cout <<"Il n'y a pas d'intersection." << endl;
   }*/
 }
-
-
-//********************************************//
